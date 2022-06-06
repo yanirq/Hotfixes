@@ -1,0 +1,38 @@
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  creationTimestamp: null
+  labels:
+    machineconfiguration.openshift.io/role: worker-cnf
+  name: 99-disable-devices-rps
+spec:
+  config:
+    ignition:
+      config:
+        replace:
+          verification: {}
+      proxy: {}
+      security:
+        tls: {}
+      timeouts: {}
+      version: 3.2.0
+    passwd: {}
+    storage:
+      files:
+        - contents:
+            source: data:text/plain;charset=utf-8;base64,IyEvdXNyL2Jpbi9lbnYgYmFzaAoKZm9yIHZhciBpbiAiJEAiCmRvCiAgZGV2PSR2YXIKICBbIC1uICIke2Rldn0iIF0gfHwgeyBlY2hvICJUaGUgZGV2aWNlIGFyZ3VtZW50IGlzIG1pc3NpbmciID4mMiA7IGV4aXQgMTsgfQoKICBzeXN0ZW1jdGwgbWFzayB1cGRhdGUtcnBzQCR7ZGV2fS5zZXJ2aWNlCiAgc3lzdGVtY3RsIGRpc2FibGUgdXBkYXRlLXJwc0Ake2Rldn0uc2VydmljZQoKICBmdW5jdGlvbiBmaW5kX2Rldl9kaXIgewogICAgc3lzdGVtZF9kZXZzPSQoc3lzdGVtY3RsIGxpc3QtdW5pdHMgLXQgZGV2aWNlIHwgZ3JlcCBzeXMtc3Vic3lzdGVtLW5ldC1kZXZpY2VzIHwgY3V0IC1kJyAnIC1mMSkKCiAgICBmb3Igc3lzdGVtZF9kZXYgaW4gJHtzeXN0ZW1kX2RldnN9OyBkbwogICAgICBkZXZfc3lzZnM9JChzeXN0ZW1jdGwgc2hvdyAiJHtzeXN0ZW1kX2Rldn0iIC1wIFN5c0ZTUGF0aCAtLXZhbHVlKQoKICAgICAgZGV2X29yaWdfbmFtZT0iJHtkZXZfc3lzZnMjIyovfSIKICAgICAgaWYgWyAiJHtkZXZfb3JpZ19uYW1lfSIgPSAiJHtkZXZ9IiBdOyB0aGVuCiAgICAgICAgZGV2X25hbWU9IiR7c3lzdGVtZF9kZXYjIyotfSIKICAgICAgICBkZXZfbmFtZT0iJHtkZXZfbmFtZSUlLmRldmljZX0iCiAgICAgICAgaWYgWyAiJHtkZXZfbmFtZX0iID0gIiR7ZGV2fSIgXTsgdGhlbiAjIGRpc3JlZ2FyZCB0aGUgb3JpZ2luYWwgZGV2aWNlIHVuaXQKICAgICAgICAgICAgICAgIGNvbnRpbnVlCiAgICAgICAgZmkKCiAgICAgICAgZWNobyAiJHtkZXZ9IGRldmljZSB3YXMgcmVuYW1lZCB0byAkZGV2X25hbWUiCiAgICAgICAgZGV2X2Rpcj0iL3N5cy9jbGFzcy9uZXQvJHtkZXZfbmFtZX0iCiAgICAgICAgYnJlYWsKICAgICAgZmkKICAgIGRvbmUKICB9CgogIGRldl9kaXI9Ii9zeXMvY2xhc3MvbmV0LyR7ZGV2fSIKCiAgWyAtZCAiJHtkZXZfZGlyfSIgXSB8fCBmaW5kX2Rldl9kaXIgICAgICAgICAgICAgICAgIyB0aGUgbmV0IGRldmljZSB3YXMgcmVuYW1lZCwgZmluZCB0aGUgbmV3IG5hbWUKICBbIC1kICIke2Rldl9kaXJ9IiBdIHx8IHsgc2xlZXAgNTsgZmluZF9kZXZfZGlyOyB9ICAjIHNlYXJjaCBmYWlsZWQsIHdhaXQgYSBsaXR0bGUgYW5kIHRyeSBhZ2FpbgogIFsgLWQgIiR7ZGV2X2Rpcn0iIF0gfHwgeyBlY2hvICIke2Rldl9kaXJ9IiBkaXJlY3Rvcnkgbm90IGZvdW5kID4mMiA7IGV4aXQgMDsgfSAjIHRoZSBpbnRlcmZhY2UgZGlzYXBwZWFyZWQsIG5vdCBhbiBlcnJvcgoKICBmaW5kICIke2Rldl9kaXJ9Ii9xdWV1ZXMgLXR5cGUgZiAtbmFtZSBycHNfY3B1cyAtZXhlYyBzaCAtYyAiZWNobyAwMDAwMDAwMCB8IGNhdCA+IHt9IiBcOwpkb25lCg==
+            verification: {}
+          group: {}
+          mode: 448
+          path: /usr/local/bin/unset-rps-mask.sh
+          user: {}
+    systemd:
+      units:
+        - contents: |
+            [Unit]
+            Description=Unset selected network devices RPS mask and disable update-rps@.service for these devices
+
+            [Service]
+            Type=oneshot
+            ExecStart=/usr/local/bin/unset-rps-mask.sh #Add devices here (whitespace seperated list)
+          name: disable-rps.service
